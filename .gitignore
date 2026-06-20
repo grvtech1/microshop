@@ -1,0 +1,25 @@
+# Secrets — NEVER commit (rotate if leaked!)
+.env
+*.env
+secrets.yaml
+
+# Terraform state — plaintext secrets + corruption risk (M1)
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Python deps / cache
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+
+# Build artifacts
+*.log
+dist/
