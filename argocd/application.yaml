@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/REPLACE_YOU/microshop.git   # apna repo URL
+    repoURL: https://github.com/grvtech1/microshop.git      # tera repo
     targetRevision: main
     path: k8s                          # ye folder watch karega (saare manifests)
   destination:

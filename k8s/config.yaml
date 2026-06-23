@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: microshop-config
 data:
-  DB_HOST: "REPLACE_RDS_ENDPOINT"        # terraform output rds_endpoint se bharo
+  DB_HOST: "microshop-pg.cd0eq0ua4ioz.ap-south-1.rds.amazonaws.com"  # rds_endpoint
   DB_NAME: "microshop"
   DB_USER: "appuser"
   REDIS_HOST: "redis"                     # service DNS (cluster ke andar)

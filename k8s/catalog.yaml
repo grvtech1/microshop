@@ -8,9 +8,11 @@ spec:
   template:
     metadata: { labels: { app: catalog-api } }
     spec:
+      imagePullSecrets:
+      - name: ecr-secret                 # ECR (private) pull auth
       containers:
       - name: catalog-api
-        image: REPLACE_ECR/microshop/catalog-api:latest   # CI sha se update karega
+        image: 336129194698.dkr.ecr.ap-south-1.amazonaws.com/microshop/catalog-api:latest
         ports: [{ containerPort: 8000 }]
         envFrom:
         - configMapRef: { name: microshop-config }

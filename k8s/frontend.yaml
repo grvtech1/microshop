@@ -8,9 +8,11 @@ spec:
   template:
     metadata: { labels: { app: frontend } }
     spec:
+      imagePullSecrets:
+      - name: ecr-secret
       containers:
       - name: frontend
-        image: REPLACE_ECR/microshop/frontend:latest
+        image: 336129194698.dkr.ecr.ap-south-1.amazonaws.com/microshop/frontend:latest
         ports: [{ containerPort: 8000 }]
         envFrom:
         - configMapRef: { name: microshop-config }   # CATALOG_URL + ORDER_URL
