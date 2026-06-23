@@ -5,6 +5,7 @@ import psycopg2
 import redis
 
 app = FastAPI(title="catalog-api")
+VERSION = "1.1.0"
 
 DB_HOST = os.environ.get("DB_HOST", "localhost")
 DB_NAME = os.environ.get("DB_NAME", "microshop")
@@ -41,7 +42,7 @@ def init():
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "service": "catalog-api"}
+    return {"status": "ok", "service": "catalog-api", "version": VERSION}
 
 
 @app.get("/products")
