@@ -1,0 +1,21 @@
+# Argo CD Application — watches k8s/ folder, auto-syncs to cluster (GitOps)
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: microshop
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/REPLACE_YOU/microshop.git   # apna repo URL
+    targetRevision: main
+    path: k8s                          # ye folder watch karega (saare manifests)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true                      # Git se hata → cluster se hata
+      selfHeal: true                   # manual kubectl change → Git wala wapas
+    syncOptions:
+      - CreateNamespace=true

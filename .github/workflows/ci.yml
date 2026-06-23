@@ -1,0 +1,49 @@
+name: CI - Build & Push (3 services)
+
+on:
+  push:
+    branches: [main]
+    paths: ['services/**']        # sirf app code badle (manifest-commit loop se bacho)
+
+env:
+  AWS_REGION: ap-south-1
+
+jobs:
+  # --- Job 1: 3 services parallel build + push (MATRIX) ---
+  build-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [catalog-api, order-api, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: aws-actions/amazon-ecr-login@v2
+      - name: Build & push ${{ matrix.service }}
+        run: |
+          IMG=${{ secrets.ECR_REGISTRY }}/microshop/${{ matrix.service }}:${{ github.sha }}
+          docker build -t $IMG ./services/${{ matrix.service }}
+          docker push $IMG
+
+  # --- Job 2: manifests update (sab services, ek commit) ---
+  update-manifests:
+    needs: build-push            # build ke baad hi
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Update image tags in k8s manifests
+        run: |
+          SHA=${{ github.sha }}
+          ECR=${{ secrets.ECR_REGISTRY }}
+          for svc in catalog-api order-api frontend; do
+            sed -i "s|image: .*microshop/$svc.*|image: $ECR/microshop/$svc:$SHA|" k8s/$svc.yaml
+          done
+          git config user.name "ci-bot"
+          git config user.email "ci@microshop.dev"
+          git add k8s/
+          git commit -m "ci: update images to $SHA [skip ci]" || echo "no changes"
+          git push

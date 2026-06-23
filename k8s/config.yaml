@@ -1,0 +1,21 @@
+# Non-secret config (DB host, service URLs)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: microshop-config
+data:
+  DB_HOST: "REPLACE_RDS_ENDPOINT"        # terraform output rds_endpoint se bharo
+  DB_NAME: "microshop"
+  DB_USER: "appuser"
+  REDIS_HOST: "redis"                     # service DNS (cluster ke andar)
+  CATALOG_URL: "http://catalog-api:8000"  # inter-service (service DNS)
+  ORDER_URL: "http://order-api:8000"
+---
+# Secret — DB password (base64; prod mein encryption-at-rest/Vault, M8)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: microshop-secret
+type: Opaque
+stringData:
+  DB_PASSWORD: "MicroShop2026Secret"      # terraform.tfvars wala same

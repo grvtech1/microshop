@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-api
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: order-api } }
+  template:
+    metadata: { labels: { app: order-api } }
+    spec:
+      containers:
+      - name: order-api
+        image: REPLACE_ECR/microshop/order-api:latest
+        ports: [{ containerPort: 8000 }]
+        envFrom:
+        - configMapRef: { name: microshop-config }   # CATALOG_URL yahin se (inter-service)
+        - secretRef: { name: microshop-secret }
+        readinessProbe:
+          httpGet: { path: /health, port: 8000 }
+          initialDelaySeconds: 5
+        livenessProbe:
+          httpGet: { path: /health, port: 8000 }
+          initialDelaySeconds: 10
+        resources:
+          requests: { cpu: "50m", memory: "96Mi" }
+          limits:   { cpu: "250m", memory: "192Mi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-api
+spec:
+  selector: { app: order-api }
+  ports: [{ port: 8000, targetPort: 8000 }]   # ClusterIP — internal

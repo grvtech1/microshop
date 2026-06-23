@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: catalog-api
+spec:
+  replicas: 1                          # t3.micro tight — 1. (HA = 2+)
+  selector: { matchLabels: { app: catalog-api } }
+  template:
+    metadata: { labels: { app: catalog-api } }
+    spec:
+      containers:
+      - name: catalog-api
+        image: REPLACE_ECR/microshop/catalog-api:latest   # CI sha se update karega
+        ports: [{ containerPort: 8000 }]
+        envFrom:
+        - configMapRef: { name: microshop-config }
+        - secretRef: { name: microshop-secret }
+        readinessProbe:                # traffic ke ready? (Endpoints gate)
+          httpGet: { path: /health, port: 8000 }
+          initialDelaySeconds: 5
+        livenessProbe:                 # zinda? (sirf self-health — DB check NAHI, footgun)
+          httpGet: { path: /health, port: 8000 }
+          initialDelaySeconds: 10
+        resources:
+          requests: { cpu: "50m", memory: "96Mi" }
+          limits:   { cpu: "250m", memory: "192Mi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalog-api                    # ye DNS naam (order-api isse call karega)
+spec:
+  selector: { app: catalog-api }
+  ports: [{ port: 8000, targetPort: 8000 }]   # ClusterIP — internal only

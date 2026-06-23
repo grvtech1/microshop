@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: frontend } }
+  template:
+    metadata: { labels: { app: frontend } }
+    spec:
+      containers:
+      - name: frontend
+        image: REPLACE_ECR/microshop/frontend:latest
+        ports: [{ containerPort: 8000 }]
+        envFrom:
+        - configMapRef: { name: microshop-config }   # CATALOG_URL + ORDER_URL
+        readinessProbe:
+          httpGet: { path: /health, port: 8000 }
+          initialDelaySeconds: 5
+        livenessProbe:
+          httpGet: { path: /health, port: 8000 }
+          initialDelaySeconds: 10
+        resources:
+          requests: { cpu: "50m", memory: "64Mi" }
+          limits:   { cpu: "200m", memory: "128Mi" }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  type: NodePort                       # bahar se accessible (user → frontend)
+  selector: { app: frontend }
+  ports: [{ port: 8000, targetPort: 8000, nodePort: 30080 }]

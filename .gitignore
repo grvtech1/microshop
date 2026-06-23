@@ -8,6 +8,9 @@ secrets.yaml
 *.tfstate.*
 .terraform/
 .terraform.lock.hcl
+# Terraform vars — secrets (db_password!), NEVER commit
+terraform.tfvars
+*.auto.tfvars
 
 # Python deps / cache
 __pycache__/
