@@ -12,7 +12,7 @@ spec:
       - name: ecr-secret                 # ECR (private) pull auth
       containers:
       - name: catalog-api
-        image: 336129194698.dkr.ecr.ap-south-1.amazonaws.com/microshop/catalog-api:latest
+        image: 336129194698.dkr.ecr.ap-south-1.amazonaws.com/microshop/catalog-api:9fe35f9c5453efeee9b0e0fda09b0817df39ebb1
         ports: [{ containerPort: 8000 }]
         envFrom:
         - configMapRef: { name: microshop-config }
