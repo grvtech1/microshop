@@ -5,7 +5,7 @@ import psycopg2
 import redis
 
 app = FastAPI(title="catalog-api")
-VERSION = "1.1.1"
+VERSION = "1.1.2"
 
 DB_HOST = os.environ.get("DB_HOST", "localhost")
 DB_NAME = os.environ.get("DB_NAME", "microshop")
