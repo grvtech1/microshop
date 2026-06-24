@@ -1,4 +1,4 @@
-# 🛒 MicroShop — Microservices DevOps Capstone
+# 🛒 MicroShop — Microservices 
 
 Chhota e-commerce: **3 microservices + Redis + Postgres** on AWS, self-managed Kubernetes, full Git→Production pipeline (Terraform · Ansible · Docker · K8s · GitHub Actions · Argo CD).
 
