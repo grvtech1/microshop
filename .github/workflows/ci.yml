@@ -8,6 +8,9 @@ on:
 env:
   AWS_REGION: ap-south-1
 
+permissions:
+  contents: write          # CI ko Git pe wapas push karne ki ijaazat (manifest update)
+
 jobs:
   # --- Job 1: 3 services parallel build + push (MATRIX) ---
   build-push:
